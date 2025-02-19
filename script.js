@@ -7,11 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   darkModeToggle.addEventListener("click", () => {
     body.classList.toggle("dark-mode");
-    if (body.classList.contains("dark-mode")) {
-      localStorage.setItem("theme", "dark");
-    } else {
-      localStorage.setItem("theme", "light");
-    }
+    localStorage.setItem("theme", body.classList.contains("dark-mode") ? "dark" : "light");
   });
 
   /* ---------- RESISTOR CALCULATOR LOGIC ---------- */
@@ -22,17 +18,18 @@ document.addEventListener("DOMContentLoaded", function () {
   const multiplier = document.getElementById("multiplier");
   const tolerance = document.getElementById("tolerance");
   const bandsSelect = document.getElementById("bands");
-  const calculateButton = document.getElementById("calculate");
   const resultSpan = document.getElementById("result");
 
   /* ---------- RESISTOR PREVIEW ELEMENTS ---------- */
-  const previewBand1 = document.getElementById("preview-band1");
-  const previewBand2 = document.getElementById("preview-band2");
-  const previewBand3 = document.getElementById("preview-band3");
-  const previewMultiplier = document.getElementById("preview-multiplier");
-  const previewTolerance = document.getElementById("preview-tolerance");
+  const previewElements = {
+    band1: document.getElementById("preview-band1"),
+    band2: document.getElementById("preview-band2"),
+    band3: document.getElementById("preview-band3"),
+    multiplier: document.getElementById("preview-multiplier"),
+    tolerance: document.getElementById("preview-tolerance")
+  };
 
-  /* ---------- COLOR DEFINITIONS (with HEX codes) ---------- */
+  /* ---------- COLOR DEFINITIONS ---------- */
   const colors = [
     { name: "Black", value: 0, multiplier: 1, tolerance: null, hex: "#000000" },
     { name: "Brown", value: 1, multiplier: 10, tolerance: 1, hex: "#964B00" },
@@ -49,88 +46,72 @@ document.addEventListener("DOMContentLoaded", function () {
   ];
 
   /* ---------- POPULATE DROPDOWNS ---------- */
-  // Updated populateSelect to accept a property name to use for the value
   function populateSelect(select, filter, propName) {
     select.innerHTML = "";
-    colors.forEach(color => {
-      if (filter(color)) {
-        let option = document.createElement("option");
-        option.value = color[propName];
-        option.textContent = color.name;
-        select.appendChild(option);
+    colors.filter(filter).forEach(color => {
+      let option = document.createElement("option");
+      option.value = color[propName];
+      option.textContent = color.name;
+      select.appendChild(option);
+    });
+  }
+
+  populateSelect(band1, c => c.value !== null, "value");
+  populateSelect(band2, c => c.value !== null, "value");
+  populateSelect(multiplier, c => c.multiplier !== null, "multiplier");
+  populateSelect(tolerance, c => c.tolerance !== null, "tolerance");
+
+  function updateBands() {
+    const isFiveBand = bandsSelect.value === "5";
+    band3.style.display = isFiveBand ? "inline-block" : "none";
+    band3Label.style.display = isFiveBand ? "inline-block" : "none";
+    previewElements.band3.style.display = isFiveBand ? "block" : "none";
+    if (isFiveBand) populateSelect(band3, c => c.value !== null, "value");
+    updateResistorPreview();
+    calculateResistance();
+  }
+
+  function updateResistorPreview() {
+    function getHex(name) {
+      let color = colors.find(c => c.name === name);
+      return color ? color.hex : "transparent";
+    }
+    ["band1", "band2", "band3", "multiplier", "tolerance"].forEach(key => {
+      if (previewElements[key]) {
+        previewElements[key].style.backgroundColor = getHex(
+          document.getElementById(key).selectedOptions[0]?.textContent || ""
+        );
       }
     });
   }
 
-  // For digit bands, we use the 'value' property.
-  populateSelect(band1, c => c.value !== null, "value");
-  populateSelect(band2, c => c.value !== null, "value");
-  // For multiplier and tolerance, use their respective properties.
-  populateSelect(multiplier, c => c.multiplier !== null, "multiplier");
-  populateSelect(tolerance, c => c.tolerance !== null, "tolerance");
-
-  /* ---------- UPDATE BAND VISIBILITY & PREVIEW ---------- */
-  function updateBands() {
-    if (bandsSelect.value === "5") {
-      band3.style.display = "inline-block";
-      band3Label.style.display = "inline-block";
-      // For 5-band resistors, populate band3 with digit colors.
-      populateSelect(band3, c => c.value !== null, "value");
-      previewBand3.style.display = "block";
-    } else {
-      band3.style.display = "none";
-      band3Label.style.display = "none";
-      previewBand3.style.display = "none";
-    }
-    updateResistorPreview();
+  function formatResistance(value) {
+    if (value >= 1e6) return (value / 1e6).toFixed(2) + " MΩ";
+    if (value >= 1e3) return (value / 1e3).toFixed(2) + " kΩ";
+    return value + " Ω";
   }
 
-  function updateResistorPreview() {
-    function getHex(selectedText) {
-      let colorObj = colors.find(c => c.name.toLowerCase() === selectedText.toLowerCase());
-      return colorObj ? colorObj.hex : "transparent";
-    }
-    const selBand1 = band1.options[band1.selectedIndex]?.textContent || "";
-    const selBand2 = band2.options[band2.selectedIndex]?.textContent || "";
-    const selBand3 = bandsSelect.value === "5" ? band3.options[band3.selectedIndex]?.textContent || "" : "";
-    const selMultiplier = multiplier.options[multiplier.selectedIndex]?.textContent || "";
-    const selTolerance = tolerance.options[tolerance.selectedIndex]?.textContent || "";
-
-    previewBand1.style.backgroundColor = getHex(selBand1);
-    previewBand2.style.backgroundColor = getHex(selBand2);
-    if (bandsSelect.value === "5") {
-      previewBand3.style.backgroundColor = getHex(selBand3);
-    }
-    previewMultiplier.style.backgroundColor = getHex(selMultiplier);
-    previewTolerance.style.backgroundColor = getHex(selTolerance);
-  }
-
-  /* ---------- CALCULATE RESISTANCE ---------- */
   function calculateResistance() {
     let multiplierValue = parseFloat(multiplier.value);
     let toleranceValue = tolerance.value ? `±${tolerance.value}%` : "";
     let resistance;
     if (bandsSelect.value === "4") {
-      let digit1 = parseInt(band1.value);
-      let digit2 = parseInt(band2.value);
-      resistance = (digit1 * 10 + digit2) * multiplierValue;
+      resistance = (parseInt(band1.value) * 10 + parseInt(band2.value)) * multiplierValue;
     } else {
-      let digit1 = parseInt(band1.value);
-      let digit2 = parseInt(band2.value);
-      let digit3 = parseInt(band3.value);
-      resistance = (digit1 * 100 + digit2 * 10 + digit3) * multiplierValue;
+      resistance = (parseInt(band1.value) * 100 + parseInt(band2.value) * 10 + parseInt(band3.value)) * multiplierValue;
     }
-    resultSpan.textContent = `${resistance}Ω ${toleranceValue}`;
+    resultSpan.textContent = `${formatResistance(resistance)} ${toleranceValue}`;
   }
 
-  /* ---------- EVENT LISTENERS ---------- */
   bandsSelect.addEventListener("change", updateBands);
   document.querySelectorAll(".color-select").forEach(select => {
-    select.addEventListener("change", updateResistorPreview);
+    select.addEventListener("change", () => {
+      updateResistorPreview();
+      calculateResistance();
+    });
   });
-  calculateButton.addEventListener("click", calculateResistance);
 
-  // Initialize preview and bands
   updateBands();
   updateResistorPreview();
+  calculateResistance();
 });
