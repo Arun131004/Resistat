@@ -5,7 +5,7 @@
     /* Light Mode */
     --body-bg-light: #f4f4f4;
     --text-color-light: #333;
-    --container-bg-light: rgba(255,255,255,0.7);
+    --container-bg-light: rgba(255,255,255,0.2);
     
     /* Blob settings for light mode */
     --blob-gradient-light: linear-gradient(45deg, #b228d4, #cca61e);
@@ -16,7 +16,7 @@
     /* Dark Mode */
     --body-bg-dark: #000; /* Pure black */
     --text-color-dark: #f4f4f4;
-    --container-bg-dark: rgba(20,20,20,0.7);
+    --container-bg-dark: rgba(20,20,20,0.2);
     
     /* Blob settings for dark mode */
     --blob-gradient-dark: linear-gradient(45deg, #197e68, #1c1568);
