@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", function () {
   
     /* ---------- CALCULATE RESISTANCE ---------- */
     function calculateResistance() {
-      let multiplierValue = parseFloat(multiplier.value);
+      let multiplierValue = parseFloat(multiplier.multiplier);
       let toleranceValue = tolerance.value ? `±${tolerance.value}%` : "";
       let resistance;
       if (bandsSelect.value === "4") {
