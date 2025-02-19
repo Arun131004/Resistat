@@ -183,7 +183,14 @@
     width: 8%;
     background: transparent;
   }
-  
+
+
+#calculate {
+    display: none;
+}
+
+
+
   /* Position each preview band (simple layout) */
   #preview-band1 { left: 15%; }
   #preview-band2 { left: 30%; }
