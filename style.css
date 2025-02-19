@@ -1,0 +1,193 @@
+/* --------------------------
+   THEME VARIABLES
+--------------------------- */
+:root {
+    /* Light Mode */
+    --body-bg-light: #f4f4f4;
+    --text-color-light: #333;
+    --container-bg-light: rgba(255,255,255,0.9);
+    
+    /* Blob settings for light mode */
+    --blob-gradient-light: linear-gradient(45deg, #b228d4, #cca61e);
+    --blob-opacity-light: 0.8;
+    --blob-blur-light: 20px;
+    --blob-size-light: 300px;
+    
+    /* Dark Mode */
+    --body-bg-dark: #000; /* Pure black */
+    --text-color-dark: #f4f4f4;
+    --container-bg-dark: rgba(20,20,20,0.9);
+    
+    /* Blob settings for dark mode */
+    --blob-gradient-dark: linear-gradient(45deg, #197e68, #1c1568);
+    --blob-opacity-dark: 0.9;
+    --blob-blur-dark: 40px;
+    --blob-size-dark: 300px;
+  }
+  
+  /* --------------------------
+     GLOBAL STYLES
+  --------------------------- */
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: var(--body-bg-light);
+    color: var(--text-color-light);
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  body.dark-mode {
+    background-color: var(--body-bg-dark);
+    color: var(--text-color-dark);
+  }
+  
+  /* Dark Mode Toggle Button */
+  .toggle-container {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+  }
+  .dark-mode-toggle {
+    padding: 10px 15px;
+    background-color: #fff;
+    color: #333;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  body.dark-mode .dark-mode-toggle {
+    background-color: #333;
+    color: #fff;
+  }
+  
+  /* --------------------------
+     BACKGROUND & BLOBS
+  --------------------------- */
+  .background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    z-index: -1;
+    /* No background here so the blobs can show over the body background */
+  }
+  
+  .blob {
+    position: absolute;
+    width: var(--blob-size-light);
+    height: var(--blob-size-light);
+    background: var(--blob-gradient-light);
+    border-radius: 50%;
+    opacity: var(--blob-opacity-light);
+    filter: blur(var(--blob-blur-light));
+    animation: moveBlobs 8s infinite alternate ease-in-out;
+  }
+  body.dark-mode .blob {
+    width: var(--blob-size-dark);
+    height: var(--blob-size-dark);
+    background: var(--blob-gradient-dark);
+    opacity: var(--blob-opacity-dark);
+    filter: blur(var(--blob-blur-dark));
+  }
+  
+  /* Positioning blobs */
+  .blob.blob1 {
+    top: 10%;
+    left: 20%;
+  }
+  .blob.blob2 {
+    bottom: 10%;
+    right: 25%;
+  }
+  
+  @keyframes moveBlobs {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(40px, 40px) scale(1.2); }
+    100% { transform: translate(-40px, -40px) scale(1); }
+  }
+  
+  /* --------------------------
+     CONTAINER & FORM
+  --------------------------- */
+  .container {
+    max-width: 400px;
+    margin: 120px auto;
+    padding: 20px;
+    background-color: var(--container-bg-light);
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: background-color 0.3s;
+  }
+  body.dark-mode .container {
+    background-color: var(--container-bg-dark);
+  }
+  
+  h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  label {
+    display: block;
+    margin: 10px 0 5px;
+  }
+  select, button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+  }
+  button {
+    background-color: #007bff;
+    color: #fff;
+    transition: 0.3s;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #0056b3;
+  }
+  h2 {
+    margin-top: 15px;
+  }
+  
+  /* --------------------------
+     RESISTOR PREVIEW (Rounded Rectangle)
+  --------------------------- */
+  .resistor-preview {
+    margin: 20px auto 30px;
+    width: 90%;
+    max-width: 350px;
+    height: 50px;
+    position: relative;
+    margin-bottom: 20px;
+  }
+  .resistor-body {
+    background: #e0e0e0;
+    border: 2px solid #999;
+    border-radius: 25px;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+  }
+  .preview-band {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 8%;
+    background: transparent;
+  }
+  
+  /* Position each preview band (simple layout) */
+  #preview-band1 { left: 15%; }
+  #preview-band2 { left: 30%; }
+  #preview-band3 { left: 45%; }
+  #preview-multiplier { left: 60%; }
+  #preview-tolerance { left: 75%; }
+  

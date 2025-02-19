@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Resistor Calculator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Dark Mode Toggle Button -->
+  <div class="toggle-container">
+    <button id="dark-mode-toggle" class="dark-mode-toggle">Toggle Dark Mode</button>
+  </div>
+
+  <!-- Animated Background Blobs -->
+  <div class="background">
+    <div class="blob blob1"></div>
+    <div class="blob blob2"></div>
+  </div>
+
+  <!-- Main Calculator Container -->
+  <div class="container">
+    <h1>Resistator</h1>
+    
+    <!-- Simple Resistor Preview (Rounded Rectangle) -->
+    <div id="resistor-preview" class="resistor-preview">
+      <div class="resistor-body">
+        <div id="preview-band1" class="preview-band"></div>
+        <div id="preview-band2" class="preview-band"></div>
+        <div id="preview-band3" class="preview-band"></div>
+        <div id="preview-multiplier" class="preview-band"></div>
+        <div id="preview-tolerance" class="preview-band"></div>
+      </div>
+    </div>
+
+    <!-- Input Form -->
+    <label for="bands">Number of Bands:</label>
+    <select id="bands">
+      <option value="4">4 Bands</option>
+      <option value="5">5 Bands</option>
+    </select>
+
+    <label for="band1">Band 1:</label>
+    <select id="band1" class="color-select"></select>
+
+    <label for="band2">Band 2:</label>
+    <select id="band2" class="color-select"></select>
+
+    <label id="band3-label" for="band3">Band 3:</label>
+    <select id="band3" class="color-select"></select>
+
+    <label for="multiplier">Multiplier:</label>
+    <select id="multiplier" class="color-select"></select>
+
+    <label for="tolerance">Tolerance:</label>
+    <select id="tolerance" class="color-select"></select>
+
+    <button id="calculate">Calculate</button>
+
+    <h2>Result: <span id="result">N/A</span></h2>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
