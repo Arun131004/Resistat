@@ -72,6 +72,7 @@
     height: 100vh;
     overflow: hidden;
     z-index: -1;
+    /* No background here so the blobs can show over the body background */
   }
   
   .blob {
@@ -151,9 +152,12 @@
   button:hover {
     background-color: #0056b3;
   }
+  h2 {
+    margin-top: 15px;
+  }
   
   /* --------------------------
-     RESISTOR PREVIEW
+     RESISTOR PREVIEW (Rounded Rectangle)
   --------------------------- */
   .resistor-preview {
     margin: 20px auto 30px;
@@ -179,44 +183,50 @@
     width: 8%;
     background: transparent;
   }
-  
-  /* Resistor Pins */
-  .resistor-pin {
-    position: absolute;
-    width: 10px;
-    height: 20px;
-    background: silver;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-  .resistor-pin.left { left: -10px; }
-  .resistor-pin.right { right: -10px; }
-  
-  /* Bumps & Ridges */
-  .resistor-body::before, .resistor-body::after {
-    content: '';
-    position: absolute;
-    width: 15px;
-    height: 100%;
-    background: #bbb;
-    border-radius: 10px;
-  }
-  .resistor-body::before { left: 5%; }
-  .resistor-body::after { right: 5%; }
-  
-  /* Footer Credit */
-  .footer-credit {
+
+
+
+/* --------------------------
+   FOOTER CREDIT
+--------------------------- */
+.footer-credit {
     position: fixed;
     bottom: 10px;
     left: 50%;
     transform: translateX(-50%);
+    padding: 5px 15px;
     background: linear-gradient(45deg, #b228d4, #cca61e);
     color: white;
-    padding: 5px 15px;
+    font-size: 14px;
     border-radius: 10px;
-  }
-  .footer-credit a {
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.footer-credit a {
     color: white;
     text-decoration: none;
     font-weight: bold;
-  }
+    transition: color 0.3s ease-in-out;
+}
+
+.footer-credit a:hover {
+    color: #ffeb3b; /* Changes color on hover */
+}
+
+
+
+
+
+
+#calculate {
+    display: none;
+}
+
+
+  /* Position each preview band (simple layout) */
+  #preview-band1 { left: 15%; }
+  #preview-band2 { left: 30%; }
+  #preview-band3 { left: 45%; }
+  #preview-multiplier { left: 60%; }
+  #preview-tolerance { left: 75%; }
+  
